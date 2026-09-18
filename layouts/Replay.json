@@ -42,6 +42,9 @@
                     },
                     "/doom/entities": {
                       "visible": true
+                    },
+                    "/doom/walls": {
+                      "visible": true
                     }
                   },
                   "followTf": "base_link",

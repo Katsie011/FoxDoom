@@ -107,3 +107,51 @@
 {"from": "SX-04", "type": "IMPLEMENTS", "to": "ws_05_stunt_extras", "ts": "2026-09-18", "note": "Stunt-extras contract item SX-04 is owned by workstream 05."}
 {"from": "SX-05", "type": "IMPLEMENTS", "to": "ws_05_stunt_extras", "ts": "2026-09-18", "note": "Stunt-extras contract item SX-05 is owned by workstream 05."}
 {"from": "SX-06", "type": "IMPLEMENTS", "to": "ws_05_stunt_extras", "ts": "2026-09-18", "note": "Stunt-extras contract item SX-06 is owned by workstream 05."}
+{"from": "PR-01", "type": "IMPLEMENTS", "to": "ws_04_record_replay", "ts": "2026-09-18", "note": "Pause-replay contract item PR-01 is owned by workstream 04."}
+{"from": "PR-02", "type": "IMPLEMENTS", "to": "ws_04_record_replay", "ts": "2026-09-18", "note": "Pause-replay contract item PR-02 is owned by workstream 04."}
+{"from": "PR-03", "type": "IMPLEMENTS", "to": "ws_04_record_replay", "ts": "2026-09-18", "note": "Pause-replay contract item PR-03 is owned by workstream 04."}
+{"from": "PR-04", "type": "IMPLEMENTS", "to": "ws_04_record_replay", "ts": "2026-09-18", "note": "Pause-replay contract item PR-04 is owned by workstream 04."}
+{"from": "PR-05", "type": "IMPLEMENTS", "to": "ws_04_record_replay", "ts": "2026-09-18", "note": "Pause-replay contract item PR-05 is owned by workstream 04."}
+{"from": "PR-06", "type": "IMPLEMENTS", "to": "ws_04_record_replay", "ts": "2026-09-18", "note": "Pause-replay contract item PR-06 is owned by workstream 04."}
+{"from": "PR-07", "type": "IMPLEMENTS", "to": "ws_04_record_replay", "ts": "2026-09-18", "note": "Pause-replay contract item PR-07 is owned by workstream 04."}
+{"from": "PR-08", "type": "IMPLEMENTS", "to": "ws_04_record_replay", "ts": "2026-09-18", "note": "Pause-replay contract item PR-08 is owned by workstream 04."}
+{"from": "PR-09", "type": "IMPLEMENTS", "to": "ws_04_record_replay", "ts": "2026-09-18", "note": "Pause-replay contract item PR-09 is owned by workstream 04."}
+{"from": "PR-10", "type": "IMPLEMENTS", "to": "ws_04_record_replay", "ts": "2026-09-18", "note": "Pause-replay contract item PR-10 is owned by workstream 04."}
+{"from": "RD-01", "type": "IMPLEMENTS", "to": "ws_readme", "ts": "2026-09-18", "note": "README rewrite contract item RD-01 is owned by workstream readme."}
+{"from": "RD-02", "type": "IMPLEMENTS", "to": "ws_readme", "ts": "2026-09-18", "note": "README rewrite contract item RD-02 is owned by workstream readme."}
+{"from": "RD-03", "type": "IMPLEMENTS", "to": "ws_readme", "ts": "2026-09-18", "note": "README rewrite contract item RD-03 is owned by workstream readme."}
+{"from": "RD-04", "type": "IMPLEMENTS", "to": "ws_readme", "ts": "2026-09-18", "note": "README rewrite contract item RD-04 is owned by workstream readme."}
+{"from": "RD-05", "type": "IMPLEMENTS", "to": "ws_readme", "ts": "2026-09-18", "note": "README rewrite contract item RD-05 is owned by workstream readme."}
+{"from": "RD-06", "type": "IMPLEMENTS", "to": "ws_readme", "ts": "2026-09-18", "note": "README rewrite contract item RD-06 is owned by workstream readme."}
+{"from": "RD-07", "type": "IMPLEMENTS", "to": "ws_readme", "ts": "2026-09-18", "note": "README rewrite contract item RD-07 is owned by workstream readme."}
+{"from": "RD-08", "type": "IMPLEMENTS", "to": "ws_readme", "ts": "2026-09-18", "note": "README rewrite contract item RD-08 is owned by workstream readme."}
+{"from": "RD-09", "type": "IMPLEMENTS", "to": "ws_readme", "ts": "2026-09-18", "note": "README rewrite contract item RD-09 is owned by workstream readme."}
+{"from": "RD-10", "type": "IMPLEMENTS", "to": "ws_readme", "ts": "2026-09-18", "note": "README rewrite contract item RD-10 is owned by workstream readme."}
+{"from": "RD-11", "type": "IMPLEMENTS", "to": "ws_readme", "ts": "2026-09-18", "note": "README rewrite contract item RD-11 is owned by workstream readme."}
+{"from": "RD-12", "type": "IMPLEMENTS", "to": "ws_readme", "ts": "2026-09-18", "note": "README rewrite contract item RD-12 is owned by workstream readme."}
+{"from": "RD-13", "type": "IMPLEMENTS", "to": "ws_readme", "ts": "2026-09-18", "note": "README rewrite contract item RD-13 is owned by workstream readme."}
+{"from": "RD-14", "type": "IMPLEMENTS", "to": "ws_readme", "ts": "2026-09-18", "note": "README rewrite contract item RD-14 is owned by workstream readme."}
+{"from": "RD-15", "type": "IMPLEMENTS", "to": "ws_readme", "ts": "2026-09-18", "note": "README rewrite contract item RD-15 is owned by workstream readme."}
+{"from": "RD-16", "type": "IMPLEMENTS", "to": "ws_readme", "ts": "2026-09-18", "note": "README rewrite contract item RD-16 is owned by workstream readme."}
+{"from": "RD-17", "type": "IMPLEMENTS", "to": "ws_readme", "ts": "2026-09-18", "note": "README rewrite contract item RD-17 is owned by workstream readme."}
+{"from": "RD-18", "type": "IMPLEMENTS", "to": "ws_readme", "ts": "2026-09-18", "note": "README rewrite contract item RD-18 is owned by workstream readme."}
+{"from": "dec_host_html_hud", "type": "SUPERSEDES", "to": "dec_stock_panels_only", "ts": "2026-09-18", "note": "Human reopened stock-panels: iframe stays stock; host HTML HUD is allowed; .foxe still out."}
+{"from": "dec_host_html_hud", "type": "DECIDES", "to": "ws_05_stunt_extras", "ts": "2026-09-18", "note": "Demo UX polish HUD chrome is host HTML owned by 05."}
+{"from": "dec_host_html_hud", "type": "DECIDES", "to": "cap_stunt_extras", "ts": "2026-09-18", "note": "Host HTML HUD and linedef walls are 05 garnish, not a .foxe."}
+{"from": "dec_vizdoom_engine", "type": "DECIDES", "to": "ws_05_stunt_extras", "ts": "2026-09-18", "note": "Linedef walls read ViZDoom get_state lines/sectors, not a from-scratch WAD parser."}
+{"from": "UX-01", "type": "IMPLEMENTS", "to": "ws_05_stunt_extras", "ts": "2026-09-18", "note": "Stunt-extras contract item UX-01 is owned by workstream 05."}
+{"from": "UX-02", "type": "IMPLEMENTS", "to": "ws_05_stunt_extras", "ts": "2026-09-18", "note": "Stunt-extras contract item UX-02 is owned by workstream 05."}
+{"from": "UX-03", "type": "IMPLEMENTS", "to": "ws_05_stunt_extras", "ts": "2026-09-18", "note": "Stunt-extras contract item UX-03 is owned by workstream 05."}
+{"from": "UX-04", "type": "IMPLEMENTS", "to": "ws_05_stunt_extras", "ts": "2026-09-18", "note": "Stunt-extras contract item UX-04 is owned by workstream 05."}
+{"from": "UX-05", "type": "IMPLEMENTS", "to": "ws_05_stunt_extras", "ts": "2026-09-18", "note": "Stunt-extras contract item UX-05 is owned by workstream 05."}
+{"from": "UX-06", "type": "IMPLEMENTS", "to": "ws_05_stunt_extras", "ts": "2026-09-18", "note": "Stunt-extras contract item UX-06 is owned by workstream 05."}
+{"from": "UX-07", "type": "IMPLEMENTS", "to": "ws_05_stunt_extras", "ts": "2026-09-18", "note": "Stunt-extras contract item UX-07 is owned by workstream 05."}
+{"from": "UX-08", "type": "IMPLEMENTS", "to": "ws_05_stunt_extras", "ts": "2026-09-18", "note": "Stunt-extras contract item UX-08 is owned by workstream 05."}
+{"from": "UX-09", "type": "IMPLEMENTS", "to": "ws_05_stunt_extras", "ts": "2026-09-18", "note": "Stunt-extras contract item UX-09 is owned by workstream 05."}
+{"from": "UX-10", "type": "IMPLEMENTS", "to": "ws_05_stunt_extras", "ts": "2026-09-18", "note": "Stunt-extras contract item UX-10 is owned by workstream 05."}
+{"from": "UX-11", "type": "IMPLEMENTS", "to": "ws_05_stunt_extras", "ts": "2026-09-18", "note": "Stunt-extras contract item UX-11 is owned by workstream 05."}
+{"from": "UX-12", "type": "IMPLEMENTS", "to": "ws_05_stunt_extras", "ts": "2026-09-18", "note": "Stunt-extras contract item UX-12 is owned by workstream 05."}
+{"from": "UX-13", "type": "IMPLEMENTS", "to": "ws_05_stunt_extras", "ts": "2026-09-18", "note": "Stunt-extras contract item UX-13 is owned by workstream 05."}
+{"from": "UX-14", "type": "IMPLEMENTS", "to": "ws_05_stunt_extras", "ts": "2026-09-18", "note": "Stunt-extras contract item UX-14 is owned by workstream 05."}
+{"from": "RD-19", "type": "IMPLEMENTS", "to": "ws_readme", "ts": "2026-09-18", "note": "README rewrite contract item RD-19 is owned by workstream readme."}
+{"from": "RD-20", "type": "IMPLEMENTS", "to": "ws_readme", "ts": "2026-09-18", "note": "README rewrite contract item RD-20 is owned by workstream readme."}

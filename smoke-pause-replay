@@ -1,0 +1,12 @@
+#!/bin/sh
+# Smoke: pause the live loop, fetch closed sidecar, assert topics, exit 0.
+set -e
+ROOT=$(CDPATH= cd -- "$(dirname "$0")" && pwd)
+cd "$ROOT"
+if [ -x "$ROOT/.venv/bin/python" ]; then
+  PY="$ROOT/.venv/bin/python"
+else
+  PY="${PYTHON:-python3}"
+fi
+export PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}"
+exec "$PY" -m doom_foxglove.smoke_pause_replay "$@"

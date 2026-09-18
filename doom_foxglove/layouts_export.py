@@ -7,7 +7,7 @@ from pathlib import Path
 
 import foxglove.layouts as fl
 
-from doom_foxglove import CAMERA_TOPIC, CMD_VEL_TOPIC, ENTITIES_TOPIC, LOG_TOPIC, MAP_TOPIC, PLAYER_TOPIC
+from doom_foxglove import CAMERA_TOPIC, CMD_VEL_TOPIC, ENTITIES_TOPIC, LOG_TOPIC, MAP_TOPIC, PLAYER_TOPIC, WALLS_TOPIC
 
 
 def _image() -> fl.ImagePanel:
@@ -99,6 +99,7 @@ def debug_layout() -> fl.Layout:
                     frame_locked=True,
                 ),
                 ENTITIES_TOPIC: fl.BaseRendererSceneUpdateTopicSettings(visible=True),
+                WALLS_TOPIC: fl.BaseRendererSceneUpdateTopicSettings(visible=True),
             },
         ),
     )
@@ -180,6 +181,7 @@ def replay_layout() -> fl.Layout:
                     frame_locked=True,
                 ),
                 ENTITIES_TOPIC: fl.BaseRendererSceneUpdateTopicSettings(visible=True),
+                WALLS_TOPIC: fl.BaseRendererSceneUpdateTopicSettings(visible=True),
             },
         ),
     )

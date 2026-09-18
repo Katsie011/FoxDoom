@@ -48,3 +48,8 @@ Kimi critic (kimi-k3-high) re-gated the amended RL-01…RL-10 list. Verified bot
 ## [2026-09-18] evaluator | RL-nn verdict
 
 Kimi evaluator (kimi-k3-high) ran every gated RL-01…RL-10 check verbatim from `$ROOT`. `./smoke` (no `--hero`) exit 0 with `SMOKE OK` naming all five 02 topics and `WIRE LAYOUT map_schema=foxglove.Grid map=1 map_frame=map tf_schema=foxglove.FrameTransforms tf=8 tf_parent=map tf_child=base_link entities_schema=foxglove.SceneUpdate entities=8 player=8 player_keys=health,armor,ammo,weapon,tick,dead log_schema=foxglove.Log log=1`. All quote literals verified in engine.py/topics.py/smoke.py; wire client in ws_client.py derives every value from advertise + received frames. Verdict: **PASS, 10/10, failing ids: none.** Ticked all ten contract checkboxes; appended verdict to eval.md; updated progress.md. No product code touched.
+
+## [2026-09-18] planner | RL-01 dummy walls key; Gauge drop
+
+RL-08/RL-09 Gauge no longer required (host HTML HUD). RL-01 dummy channel dicts include `'walls'` so 05 `/doom/walls` can log without KeyError. Did not untick RL-01…RL-10.
+

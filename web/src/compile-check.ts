@@ -5,9 +5,9 @@
  */
 import { FoxgloveViewer } from "@foxglove/embed";
 import type { Keybinding, ParentTransportFactory, ShortcutKey } from "@foxglove/embed";
-import { BUTTONS_TOPIC, CMD_VEL_TOPIC } from "./config";
+import { BUTTONS_TOPIC, CMD_VEL_TOPIC, REPLAY_STORAGE_KEY } from "./config";
 import { doomKeybindings, HoldController, twistFromMotion } from "./keybindings";
-import { layoutIncludesTeleop, layoutParams, playLayoutData } from "./layouts";
+import { layoutIncludesTeleop, layoutParams, playLayoutData, replayLayoutData } from "./layouts";
 import { ClientPublisher, clientAdvertiseJson, ZERO_TWIST } from "./publish";
 import {
   createDoomTransport,
@@ -35,6 +35,16 @@ export const foxgloveViewerOptionsCompileCheck: ViewerOptions = {
 
 export const playSelectLayoutCompileCheck: SelectLayoutParams = layoutParams("play");
 export const debugSelectLayoutCompileCheck: SelectLayoutParams = layoutParams("debug");
+export const replaySelectLayoutCompileCheck: SelectLayoutParams = {
+  storageKey: REPLAY_STORAGE_KEY,
+  layout: replayLayoutData,
+  force: true,
+};
+export const fileSourceCompileCheck: DataSource = {
+  type: "file",
+  file: new File([new Uint8Array()], "smoke.mcap"),
+  autoplay: true,
+};
 
 export const parentOwnedSourceCompileCheck: DataSource = parentOwnedLiveSource(
   "ws://localhost:8765",

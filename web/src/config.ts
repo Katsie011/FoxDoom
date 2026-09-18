@@ -3,6 +3,7 @@ export const CMD_VEL_TOPIC = "/cmd_vel";
 export const BUTTONS_TOPIC = "/doom/buttons";
 
 export const DEFAULT_WS_URL = "ws://localhost:8765";
+export const DEFAULT_CONTROL_URL = "http://localhost:8764";
 export const TICK_HZ = 35;
 export const HOLD_TIMEOUT_MS = 900;
 
@@ -11,6 +12,7 @@ export const BUTTONS_CHANNEL_ID = 9002;
 
 export const PLAY_STORAGE_KEY = "foxglove-doom-play";
 export const DEBUG_STORAGE_KEY = "foxglove-doom-debug";
+export const REPLAY_STORAGE_KEY = "foxglove-doom-replay";
 
 export type LayoutName = "play" | "debug";
 
@@ -24,6 +26,10 @@ function firstQuery(name: string): string | undefined {
 
 export function readWsUrl(): string {
   return firstQuery("ws") ?? import.meta.env.VITE_FOXGLOVE_WS ?? DEFAULT_WS_URL;
+}
+
+export function readControlUrl(): string {
+  return firstQuery("control") ?? import.meta.env.VITE_FOXGLOVE_CONTROL ?? DEFAULT_CONTROL_URL;
 }
 
 export function readOrgSlug(): string | undefined {

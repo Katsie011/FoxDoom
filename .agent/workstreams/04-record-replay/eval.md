@@ -78,3 +78,33 @@ EXIT=0
 ## Sequencing note (not an RR FAIL)
 
 Entry condition (3) is met (critic re-gate PASS). Conditions (1) `cap_embed_page == done` and (2) a completed live embed session remain unmet, so `ws_04_record_replay` stays `deferred` in the KG. The Phase-DAG "deferred because cap_embed_page is planned" note is sequencing only; it did not excuse skipping RR-01…RR-07, and all seven were run. The human playback-bar click remains a documented manual step (RR-05), not a headless FAIL.
+
+---
+
+# Eval — 04-record-replay PR-01…PR-10 (pause-replay slice)
+
+**Evaluator:** kimi-k3-high
+**Date:** 2026-09-18
+**Verdict: PASS — 10/10.** Every PR Check run verbatim from a clean shell at `$ROOT` (`.venv/bin/python`, `PYTHONPATH=$ROOT`). RR-01…RR-07 left ticked; not re-graded. `./smoke-replay` re-run as a regression note only (see below). ES-11 on `03-embed-shell/contract.md` re-run as a regression (see below). No product code edited; only PR checkboxes ticked.
+
+| Item | Result | Evidence |
+|---|---|---|
+| PR-01 stdlib control plane 8764 | **PASS** | Check prints `PR-01 control-plane`. Quotes: `--control-port` + `default=8764` argparse (server.py:230), `start_control(` called from `main` (server.py:252), `control http://` banner (server.py:253). `start_control` in `doom_foxglove/control.py` uses `ThreadingHTTPServer`, no `foxglove.start_server`, signature has `fallback_if_busy`. `rg` for rosbridge/flask/fastapi/aiohttp over server.py + control.py prints nothing (exit 1). |
+| PR-02 POST /pause stops step, closes writer | **PASS** | Check prints `PR-02 pause-stops-step`. `run_loop` signature has `stop_event=None` default; `co_names` contains `is_set`, `wait`, `step`. Quotes: `stop_event` param (server.py:172), poll `stop_event.is_set()` (server.py:182) and `stop_event.wait(timeout=...)` (server.py:201), `writer.close()` on pause path (control.py:32; also server.py:262). `foxglove.open_mcap` still only in record.py:62. Control module has `/pause`, `do_OPTIONS`, `Access-Control-Allow-Origin`; no `mcap.Writer`, no `rosbag`. |
+| PR-03 GET /recording bytes, CORS, 409 | **PASS** | Check prints `PR-03 get-recording`. `MCAP_MAGIC == b"\x89MCAP0\r\n"`. Quotes: `application/octet-stream` (control.py:96), `Access-Control-Allow-Origin` (control.py:56, `CORS_ORIGIN = "*"`), 409 branch before pause (control.py:91-92 `self._json(409, {"error": "recording not available"})`). Runtime 409/200 proof under PR-07. |
+| PR-04 embed #pause-replay FileSource + layout | **PASS** | Check prints `PR-04 embed-button`. `id="pause-replay"` is a `<button>` labelled `Pause & replay`, appears before `id="foxglove"`; no `<canvas` in index.html. `web/src/layouts.ts` imports `layouts/Replay.json`, exports `replayLayoutData` and `replayLayoutParams()` with `storageKey`/`layout`/`force: true`; no `opaqueLayout:`. Click handler quoted at main.ts:65-85: POST `${controlUrl}/pause`, GET blob, `new File([blob], "doom.mcap")`, `viewer.setDataSource({ type: "file", file, autoplay: true })`, `viewer.selectLayout(replayLayoutParams())`. All three `rg` fences (PlaybackBar, canvas/getContext, pause-replay in layouts/) print nothing (exit 1). |
+| PR-05 control URL precedence | **PASS** | Check prints `PR-05 control-url`. Quotes: `DEFAULT_CONTROL_URL = "http://localhost:8764"` and `export function readControlUrl` in web/src/config.ts; order query → env → default verified by the Check's `find` asserts. web/README.md contains `--control-port`, `?control=`, `VITE_FOXGLOVE_CONTROL`, `8764`, and a line pairing `8766` with an explicit control URL; no `port-1` / `port minus 1`. |
+| PR-06 ./web/check + compile-check | **PASS** | `./web/check` exits 0, stdout ends `EMBED CHECK OK` (tsc --noEmit && vite build, 20 modules). Check prints `PR-06 compile-check`. Quotes: `replaySelectLayoutCompileCheck: SelectLayoutParams` with `layout: replayLayoutData`, `force: true` (compile-check.ts:38-42); `fileSourceCompileCheck: DataSource` with `type: "file"`, `autoplay: true` (compile-check.ts:43-46). No `opaqueLayout:` in compile-check.ts. |
+| PR-07 ./smoke-pause-replay | **PASS** | `test -f ./smoke-pause-replay` ok. Happy path exit 0: `pre_pause=409`, `double_pause=ok`, `step_stopped=ok`, `SMOKE-PAUSE-REPLAY OK ticks=9 http://127.0.0.1:8764 file=.../recordings/smoke-pause.mcap bytes=59359 topics=[/doom/camera, /doom/entities, /doom/events, /doom/log, /doom/map, /doom/player, /tf]` (all six RR-03 topics present; extras allowed). `--immediate-pause` exit 0 with `immediate_pause=ok`, `ticks=0`. AST check prints `PR-07 smoke-source`: `Thread(target=run_loop, kwargs={... "stop_event" ...})`, no `ticks` key. Wrapper quotes `exec "$PY" -m doom_foxglove.smoke_pause_replay "$@"` (smoke-pause-replay:12). `_fail` returns 1 (smoke_pause_replay.py:28-30). |
+| PR-08 --no-record | **PASS** | `./smoke-pause-replay --no-record` exits 0; stdout contains `no_record=409` and `step_stopped=ok` (engine stopped with no file). Embed string quoted: `setStatus("Paused, but recording is off.")` (main.ts:73). `if not args.no_record` still guards `open_recording` (server.py:246). |
+| PR-09 one-way pause | **PASS** | Check prints `PR-09 one-way`. No `id="resume` in web/index.html; `#pause-replay` trigger is `addEventListener("click", ...)` (main.ts:65). All three resume `rg` invocations (index.html, server.py, control.py) print nothing (exit 1). |
+| PR-10 scope fence | **PASS** | `no-06` printed; no `.agent/workstreams/06-*`. All fence `rg` invocations (server.py + web/src + web/index.html; control.py; smoke_pause_replay.py; smoke-pause-replay) print nothing (exit 1). `opaqueLayout\s*:` rg over layouts.ts/compile-check.ts/main.ts prints nothing (exit 1). |
+
+## Regression notes (not re-grades)
+
+- **RR-02 implication:** `./smoke-replay` re-run after the `run_loop(stop_event=None)` change: exit 0, `SMOKE-REPLAY OK ticks=8 published=8 file=.../recordings/smoke.mcap bytes=59366` with all six required topics. The optional-kwarg contract holds; PR-02's "do not break run_loop ticks=" implication is satisfied.
+- **ES-11 (03-embed-shell):** run verbatim. `rg` forbid-list over web/src + web/index.html + web/package.json prints nothing (exit 1); carve-out script prints `ES-11 carve-out-ok files 12`. ES-11 stays PASS; no PR-04/PR-10 process note needed.
+
+## Environment notes
+
+8765/8764 were free during this eval; smoke bound the defaults directly. Ephemeral fallback path (`fallback_if_busy`) is present in `start_control` and the smoke source per the Checks but was not exercised at runtime.

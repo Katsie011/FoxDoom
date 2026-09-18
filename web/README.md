@@ -28,27 +28,27 @@ npm install --no-audit --no-fund
 npm run dev
 ```
 
-Open [http://localhost:5173/](http://localhost:5173/). That origin is a secure context. Layout buttons force-load `layouts/Play.json` and `layouts/Debug.json`.
+Open [http://localhost:5173/](http://localhost:5173/). That origin is a secure context. Layout buttons force-load `layouts/Play.json` and `layouts/Debug.json`. **Pause & replay** POSTs the stdlib control plane (default `http://localhost:8764`, flag `--control-port`, override with `?control=` or `VITE_FOXGLOVE_CONTROL`) then loads the closed sidecar as a FileSource.
 
 ### Port 8765 is busy
 
 The Python process still defaults to 8765 and fails loudly if something else (another Foxglove SDK server) already bound it. Pick a free port and point the host at it:
 
 ```sh
-PYTHONPATH=. python -m doom_foxglove --fetch-iwad --port 8766
+PYTHONPATH=. python -m doom_foxglove --fetch-iwad --port 8766 --control-port 8764
 ```
 
 ```sh
-# same web/ dev server
-open "http://localhost:5173/?ws=ws://localhost:8766"
+# same web/ dev server; pair the 8766 WS workaround with an explicit ?control=
+open "http://localhost:5173/?ws=ws://localhost:8766&control=http://localhost:8764"
 ```
 
-Or set `VITE_FOXGLOVE_WS=ws://localhost:8766` before `npm run dev`. Query `?ws=` wins over the env default.
+Or set `VITE_FOXGLOVE_WS=ws://localhost:8766` and `VITE_FOXGLOVE_CONTROL=http://localhost:8764` before `npm run dev`. Query `?ws=` / `?control=` win over the env defaults. Do not derive the control URL from the WS port.
 
 ## What the host does
 
 - Opens the Foxglove WebSocket **in the parent** (`ParentTransportFactory`) so the iframe does not have to guess CORS. If parent-owned live transport is unavailable (unsigned-in iframe, ineligible org), the host falls back to iframe-owned `foxglove-websocket` and opens a **second** parent socket only for WASD publish.
-- `selectLayout({ storageKey, opaqueLayout, force: true })` for Play and Debug.
+- `selectLayout({ storageKey, layout, force: true })` for Play and Debug. `layout` is the programmatic tree from `layouts/*.json` (`foxglove.layouts`). Do not pass those files as `opaqueLayout` (that is only for a layout exported from the Foxglove app).
 - `setKeybindings` for `KeyW`/`KeyA`/`KeyS`/`KeyD`/`Space`. W/S are `linear.x`, A/D are `angular.z` (tank / Teleop mapping). Space publishes `{ fire: true }` on `/doom/buttons`. The embed API only reports presses, not keyup, so a ~900 ms hold timeout plus parent-window keyup still sends zeros / `fire: false`. Teleop remains the hold-to-move D-pad.
 
 ## Headless check (no browser)
@@ -65,6 +65,6 @@ Equivalent: `npm install --no-audit --no-fund && npm run check`. That is `tsc --
 
 ## Out of scope here
 
-Events, comparison, remote spectator. Replay an MCAP in the Foxglove app with `layouts/Replay.json` (see the repository README); this host stays live-only. Do not add a canvas renderer.
+Events, comparison, remote spectator. This host now has Pause & replay (`#pause-replay`): it loads the closed sidecar plus `layouts/Replay.json` as programmatic `layout`. You can still open the file in the Foxglove app (see the repository README). Do not add a canvas renderer.
 
 Copy-paste agent prompts (“when did health drop”, “why did I die”, “build a layout for weapons”) live in the repository README. This page does not ship a custom agent.

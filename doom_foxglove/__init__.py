@@ -13,6 +13,7 @@ ENTITIES_TOPIC = "/doom/entities"
 PLAYER_TOPIC = "/doom/player"
 LOG_TOPIC = "/doom/log"
 EVENTS_TOPIC = "/doom/events"
+WALLS_TOPIC = "/doom/walls"
 MAP_FRAME = "map"
 BASE_FRAME = "base_link"
 SCREEN_WIDTH = 320

@@ -107,6 +107,10 @@ class Entity:
     yaw: float
 
 
+# Meter-space linedef: x1, y1, x2, y2, floor_z, height (0 height → WALL_HEIGHT_M).
+WallSeg = tuple[float, float, float, float, float, float]
+
+
 @dataclass(frozen=True)
 class OccupancyGrid:
     origin_x: float
@@ -116,6 +120,7 @@ class OccupancyGrid:
     rows: int
     occupancy: bytes
     map_id: str
+    wall_lines: tuple[WallSeg, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -189,6 +194,28 @@ def weapon_name(weapon: int) -> str:
     return _WEAPON_NAMES.get(int(weapon), f"weapon {int(weapon)}")
 
 
+def hollow_room_wall_lines(size_m: float = 10.0) -> tuple[WallSeg, ...]:
+    s = float(size_m)
+    return (
+        (0.0, 0.0, s, 0.0, 0.0, 0.0),
+        (s, 0.0, s, s, 0.0, 0.0),
+        (s, s, 0.0, s, 0.0, 0.0),
+        (0.0, s, 0.0, 0.0, 0.0, 0.0),
+    )
+
+
+def _line_extrusion(line: object) -> tuple[float, float]:
+    sector = getattr(line, "front_sector", None) or getattr(line, "back_sector", None)
+    if sector is None:
+        return 0.0, 0.0
+    z0 = doom_to_m(getattr(sector, "floor_height", 0.0) or 0.0)
+    z1 = doom_to_m(getattr(sector, "ceiling_height", 0.0) or 0.0)
+    height = z1 - z0
+    if height <= DEFAULT_CELL_M:
+        return z0, 0.0
+    return z0, height
+
+
 def hollow_room(map_id: str, size_m: float = 10.0, cell_size: float = 0.5) -> OccupancyGrid:
     columns = max(4, int(round(size_m / cell_size)))
     rows = columns
@@ -205,6 +232,7 @@ def hollow_room(map_id: str, size_m: float = 10.0, cell_size: float = 0.5) -> Oc
         rows=rows,
         occupancy=bytes(data),
         map_id=map_id,
+        wall_lines=hollow_room_wall_lines(size_m),
     )
 
 
@@ -214,6 +242,7 @@ def occupancy_from_lines(
     cell_size: float = DEFAULT_CELL_M,
 ) -> OccupancyGrid:
     segs: list[tuple[float, float, float, float]] = []
+    wall_lines: list[WallSeg] = []
     xs: list[float] = []
     ys: list[float] = []
     for line in lines:
@@ -223,7 +252,9 @@ def occupancy_from_lines(
         y1 = doom_to_m(getattr(line, "y1", 0.0))
         x2 = doom_to_m(getattr(line, "x2", 0.0))
         y2 = doom_to_m(getattr(line, "y2", 0.0))
+        z0, height = _line_extrusion(line)
         segs.append((x1, y1, x2, y2))
+        wall_lines.append((x1, y1, x2, y2, z0, height))
         xs.extend((x1, x2))
         ys.extend((y1, y2))
     if not segs:
@@ -251,6 +282,7 @@ def occupancy_from_lines(
         rows=rows,
         occupancy=bytes(data),
         map_id=map_id,
+        wall_lines=tuple(wall_lines),
     )
 
 

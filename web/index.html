@@ -20,6 +20,7 @@
         <div class="layouts" role="group" aria-label="Layout">
           <button type="button" id="layout-play" data-layout="play">Play</button>
           <button type="button" id="layout-debug" data-layout="debug">Debug</button>
+          <button type="button" id="pause-replay">Pause & replay</button>
         </div>
         <p id="ws-line"><span>WebSocket</span> <code id="ws-url"></code></p>
         <p id="status">Starting…</p>
@@ -29,7 +30,39 @@
         </p>
       </div>
     </header>
-    <main id="foxglove" aria-label="Embedded Foxglove"></main>
+    <div id="stage">
+      <aside id="hud-column">
+        <div id="key-hud" aria-label="WASD keys">
+          <div class="key-row">
+            <kbd data-key="forward">W</kbd>
+          </div>
+          <div class="key-row">
+            <kbd data-key="left">A</kbd>
+            <kbd data-key="back">S</kbd>
+            <kbd data-key="right">D</kbd>
+          </div>
+          <div class="key-row">
+            <kbd data-key="fire">Space</kbd>
+          </div>
+        </div>
+        <div id="hud-bars">
+          <div class="hud-bar">
+            <span>Health</span>
+            <div class="hud-track"><div id="hud-health"></div></div>
+          </div>
+          <div class="hud-bar">
+            <span>Armor</span>
+            <div class="hud-track"><div id="hud-armor"></div></div>
+          </div>
+          <div class="hud-bar">
+            <span>Ammo</span>
+            <div class="hud-track"><div id="hud-ammo"></div></div>
+          </div>
+        </div>
+        <div id="replay-files" hidden></div>
+      </aside>
+      <main id="foxglove" aria-label="Embedded Foxglove"></main>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

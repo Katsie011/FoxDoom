@@ -51,3 +51,15 @@ Read eval.md PASS 11/11 (ES-01…ES-11) and the live graph. No new `nodes.jsonl`
 - `cap_embed_page` stays the seeded `planned` line. In-place rewrite is forbidden. A second `cap_embed_page` with `status: done` would be a duplicate id. A SUPERSEDES node cannot retire a Capability (schema direction table does not allow `Capability → Capability`). Leave the cap node; flip to `done` needs a SUPERSEDES-capable schema change or an in-place rewrite the librarian must not do.
 
 Node/edge ids appended: none.
+
+## [2026-09-18] planner | ES-11 carved for 04 pause-replay
+
+Amended ES-11 Check only so a later 03 re-eval does not FAIL when 04 pause-replay adds Replay/mcap to `web/`. 03 still FAILs comparison / spectator / rosbridge in `web/src`, `web/index.html`, `web/package.json`. 03 PASSes if the only Replay/mcap hits are the 04 surface: `#pause-replay`, `layouts/Replay.json` import, FileSource `type: "file"`, `readControlUrl` (plus `DEFAULT_CONTROL_URL`, `VITE_FOXGLOVE_CONTROL`, `replayLayoutData`, `REPLAY_STORAGE_KEY`, `.mcap`). Carve-out is quoted in the ES-11 Check. Did not untick ES-01…ES-11. Did not rewrite 03 PLAN. Did not write product code. Did not edit 01/02 contracts.
+
+## [2026-09-18] planner | ES-11 A-7 Replay.json allow
+
+Widened ES-11 allow regex with bare `Replay\.json` (04 critic A-7). Did not untick ES-01…ES-11.
+
+## [2026-09-18] planner | ES-11 key-hud / new-game carve-out
+
+Widened ES-11 allow regex for 05 UX polish: `key-hud`, `hud-bars`, `hud-health`, `hud-armor`, `hud-ammo`, `replay-files`, `new-game`. Did not untick ES-01…ES-11.

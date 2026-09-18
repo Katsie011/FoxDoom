@@ -94,10 +94,10 @@ class Rec:
 
 player = PlayerState(100.0, 0.0, 50.0, 2, 0, False)
 pose = PoseState(0.0, 0.0, 0.0, 0.0)
-dummy = {k: Rec() for k in ('map', 'tf', 'entities', 'player', 'log', 'events')}
+dummy = {k: Rec() for k in ('map', 'tf', 'entities', 'player', 'log', 'events', 'walls')}
 out = publish_world(dummy, WorldState(pose, player, [], None, []))
 assert out['map'] is None and dummy['map'].n == 0, 'publish_world must skip map when map_grid is None'
-dummy2 = {k: Rec() for k in ('map', 'tf', 'entities', 'player', 'log', 'events')}
+dummy2 = {k: Rec() for k in ('map', 'tf', 'entities', 'player', 'log', 'events', 'walls')}
 out2 = publish_world(dummy2, WorldState(pose, player, [], grid, []))
 assert out2['map'] is not None and dummy2['map'].n == 1
 print('RL-01', info.backend, 'columns', grid.columns, 'rows', grid.rows)
@@ -325,9 +325,9 @@ PASS only if exit is 0 and stdout contains `SMOKE OK`, `/doom/map`, `/tf`, `/doo
 
 Allowed `panelType` strings (stock only, `dec_stock_panels_only`): `Image`, `Teleop`, `Gauge`, `ThreeDee`, `Plot`, `Log`, `RawMessages`, `Table`. Any other `panelType` on a `type == "panel"` node is FAIL. Walk the tree; do not `json.dumps` and substring-search (that is how `_check_layouts` works today, and it is not enough for RL-08/RL-09).
 
-### RL-08 — `layouts/Play.json`: Image + Teleop + health/armor/ammo gauges
+### RL-08 — `layouts/Play.json`: Image + Teleop (Gauge not required)
 
-- [x] `layouts/Play.json` is JSON `version == 1` in the SDK programmatic layout shape. It contains an `Image` panel on `/doom/camera`, a `Teleop` panel on `/cmd_vel` at 35 Hz with `autoSendStopOnRelease` true, and Gauge panels whose `config.path` values include `/doom/player.health`, `/doom/player.armor`, and `/doom/player.ammo`. Extra allowed stock panels do not FAIL. ThreeDee is not required on Play. Do not open the Foxglove app.
+- [x] `layouts/Play.json` is JSON `version == 1` in the SDK programmatic layout shape. It contains an `Image` panel on `/doom/camera` and a `Teleop` panel on `/cmd_vel` at 35 Hz with `autoSendStopOnRelease` true. Health/armor/ammo **Gauges are not required** (host HTML HUD; `dec_host_html_hud`, 2026-09-18). Extra allowed stock panels, including extra Gauges, do not FAIL. ThreeDee is not required on Play. Do not open the Foxglove app.
 
 **Check:**
 
@@ -354,22 +354,19 @@ assert play.get('version') == 1, play.get('version')
 ps = panels(play)
 types = [p['panelType'] for p in ps]
 assert set(types) <= ALLOWED, types
-assert types.count('Image') >= 1 and types.count('Teleop') >= 1 and types.count('Gauge') >= 3, types
+assert types.count('Image') >= 1 and types.count('Teleop') >= 1, types
 images = [p for p in ps if p['panelType'] == 'Image']
 assert any((p.get('config') or {}).get('imageMode', {}).get('imageTopic') == '/doom/camera' for p in images), images
 tele = next(p for p in ps if p['panelType'] == 'Teleop')
 cfg = tele['config']
 assert cfg.get('topic') == '/cmd_vel' and cfg.get('publishRate') == 35 and cfg.get('autoSendStopOnRelease') is True, cfg
-paths = [(p.get('config') or {}).get('path') for p in ps if p['panelType'] == 'Gauge']
-for needle in ('/doom/player.health', '/doom/player.armor', '/doom/player.ammo'):
-    assert needle in paths, paths
 print('RL-08', types)
 "
 ```
 
 ### RL-09 — `layouts/Debug.json`: Play panels plus 3D, plot, log, raw
 
-- [x] `layouts/Debug.json` is JSON `version == 1`. It includes the Play set (Image `/doom/camera`, Teleop `/cmd_vel`, three player gauges) **and** a `ThreeDee` panel (`fixedFrame` `map`, `followTf` `base_link`, `/doom/map` visible with `colorField` `occupancy`, `/doom/entities` visible), a `Plot` of `/doom/player.health` and `/doom/player.ammo` vs `timestamp`, a `Log` panel on `/doom/log`, and a `RawMessages` panel on `/doom/player`. Do not open the Foxglove app. Do not require a GUI import demo (eval F-3).
+- [x] `layouts/Debug.json` is JSON `version == 1`. It includes Image `/doom/camera`, Teleop `/cmd_vel`, a `ThreeDee` panel (`fixedFrame` `map`, `followTf` `base_link`, `/doom/map` visible with `colorField` `occupancy`, `/doom/entities` visible), a `Plot` of `/doom/player.health` and `/doom/player.ammo` vs `timestamp`, a `Log` panel on `/doom/log`, and a `RawMessages` panel on `/doom/player`. Player **Gauges are not required** (host HTML HUD; extra Gauges do not FAIL). Do not open the Foxglove app. Do not require a GUI import demo (eval F-3).
 
 **Check:**
 
@@ -396,15 +393,12 @@ assert debug.get('version') == 1, debug.get('version')
 ps = panels(debug)
 types = [p['panelType'] for p in ps]
 assert set(types) <= ALLOWED, types
-for need in ('Image', 'Teleop', 'Gauge', 'ThreeDee', 'Plot', 'Log', 'RawMessages'):
+for need in ('Image', 'Teleop', 'ThreeDee', 'Plot', 'Log', 'RawMessages'):
     assert need in types, types
 images = [p for p in ps if p['panelType'] == 'Image']
 assert any((p.get('config') or {}).get('imageMode', {}).get('imageTopic') == '/doom/camera' for p in images)
 tele = next(p for p in ps if p['panelType'] == 'Teleop')
 assert tele['config'].get('topic') == '/cmd_vel'
-paths = [(p.get('config') or {}).get('path') for p in ps if p['panelType'] == 'Gauge']
-for needle in ('/doom/player.health', '/doom/player.armor', '/doom/player.ammo'):
-    assert needle in paths, paths
 td = next(p for p in ps if p['panelType'] == 'ThreeDee')
 cfg = td['config']
 assert cfg.get('fixedFrame') == 'map' and cfg.get('followTf') == 'base_link', cfg

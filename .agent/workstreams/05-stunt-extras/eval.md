@@ -158,3 +158,39 @@ State of the new contract as of this addendum:
 ## Entry-condition reminder (not an SX checkbox)
 
 Entry conditions (1) and (2) — KG capabilities `done` and 01/02/03 evaluator verdicts `done` — are owned by those loops and were not re-graded here. This verdict ticks SX-01…SX-06 against the gated contract; it does not by itself un-defer `ws_05_stunt_extras`.
+
+---
+
+# UX-01…UX-14 verdict — 2026-09-18 (evaluator, kimi-k3-high)
+
+**Target:** section F of `contract.md` (planner-amended per critic UX A-1…A-7). Every UX check run verbatim from `$ROOT` (`/Users/michael/Documents/foxglove/work/doom`), `$PY` = `$ROOT/.venv/bin/python` (executable), `PYTHONPATH=$ROOT`. I did not write this code. SX-01…SX-06 left ticked and not re-graded. Boxes ticked only where the check passed.
+
+## Verdict: PASS 14/14 — failing ids: none.
+
+| Item | Verdict | Evidence |
+|---|---|---|
+| UX-01 | PASS | Check prints `UX-01 key-hud`. Quotes: `id="key-hud"` at `web/index.html:35`, before `id="foxglove"` at `:64`; W/A/S/D + `Space` in the chunk; no `<canvas` in the HTML; `#key-hud` in `web/src/styles.css:114`. |
+| UX-02 | PASS | Check prints `UX-02 hold-coupling`. Quotes: `private listeners: MotionListener[]` + `subscribe(onMotion` (`keybindings.ts:65,69`); `flush(` iterates `this.listeners` calling `onMotion(snapshot)` (`keybindings.ts:152,166-167`); HUD updater in the same file sets `el.classList.toggle("pressed", on)` and `el.setAttribute("aria-pressed", ...)` (`keybindings.ts:187-188`) on `#key-hud` (`:173`). Per-file assert holds (only `keybindings.ts` mentions `key-hud`, and it mentions `HoldController`/`subscribe`). |
+| UX-03 | PASS | Check prints `UX-03 player-mesh`. Quotes: `_KIND_COLOR["player"] = (0.2, 0.75, 1.0, 1.0)` (`topics.py:62`) ≠ monster; `_KIND_SIZE["player"] = 0.55` (`topics.py:69`) ≠ monster; `kind="player"` injection from pose (`topics.py:353`). `publish_world` with an empty entity list still logs a SceneUpdate whose repr contains `player:`; monster path repr contains `monster:7`. |
+| UX-04 | PASS | Check prints `UX-04 hud-bars`; canvas `rg` printed nothing (`ux04_canvas_exit=1` = PASS). Quotes: `id="hud-bars"`/`hud-health`/`hud-armor`/`hud-ammo` (`web/index.html:48-59`), before `#foxglove`; `PLAYER_TOPIC = "/doom/player"` + `HEALTH_MAX = 200` / `ARMOR_MAX = 200` / `AMMO_MAX = 300` (`web/src/hud.ts:1-4`); `#hud-health` in `styles.css:171,178`. |
+| UX-05 | PASS | Check prints `UX-05 new-game`; resume `rg` on `server.py` and `control.py` both printed nothing (exit 1 = PASS). Quotes: `"/new-game"` in `_CONTROL_PATHS` (`control.py:16`); `do_OPTIONS` (`control.py:138`); `Access-Control-Allow-Origin` (`control.py:117`); `ControlState.new_game()` runs `engine.reset()`, `rec_path = default_recording_path()`, `open_recording(rec_path)`, returns `{"paused": False, "reset": True}` (`control.py:48-68`); `main` re-enters `run_loop(...)` after `state.stop_event.clear()` (`server.py:258-269`); `run_loop` signature keeps optional `stop_event=None` (`server.py:164-172`). |
+| UX-06 | PASS | Check prints `UX-06 recordings-index`. Quotes: `GET /recordings` (`control.py:160`), `GET /recording` with query `name` (`control.py:163-169`), `application/octet-stream` (`control.py:133`), CORS (`control.py:117`), traversal guard `resolve_recording_name` using `".."`, `.resolve()`, `is_relative_to` (`control.py:100-105`), missing file → 404 (`control.py:174`). |
+| UX-07 | PASS | Check prints `UX-07 play-new-game`. Quote: `#layout-play` click handler — when `replayActive`, `fetch(\`${controlBase()}/new-game\`, { method: "POST" })`, then `connectFromCapabilities()` (live `setDataSource` via `parentOwnedLiveSource` / `iframeOwnedLiveSource`), then `viewer.selectLayout(layoutParams("play"))` (`web/src/main.ts:137-149`). |
+| UX-08 | PASS | Check prints `UX-08 replay-files`. Quotes: `id="replay-files" hidden` (`web/index.html:62`), before `#foxglove`; `doom-` prefix + `.mcap` filter (`main.ts:90`); `fetch(\`${controlBase()}/recording?name=${encodeURIComponent(name)}\`)` (`main.ts:98`); `new File([blob], name)` (`main.ts:67`); `setReplayFilesHidden(true)` on live (`main.ts:126`); `type: "file"` FileSource present. |
+| UX-09 | PASS | Check prints `UX-09 layouts ['Image','Teleop','Gauge','Gauge','Gauge'] [...]`. Play = Image + Teleop (+3 extra Gauges, allowed); Image `imageTopic` = `/doom/camera`. Debug has ThreeDee/Plot/Log/RawMessages with `/doom/entities` visible. Replay has zero Teleop, ThreeDee + Image + Log, `/doom/entities` present. `play_layout`/`debug_layout`/`replay_layout` all in `layouts_export.py`. |
+| UX-10 | PASS | `./smoke-pause-replay --new-game` exits 0. Stdout contains `step_stopped=ok`, `recordings_include=smoke-pause.mcap`, `new_game=ok`, `old=.../smoke-pause.mcap new=.../doom-20260918-160354.mcap` (different paths), `step_new_game=ok`. AST check prints `UX-10 smoke-source`: `run_loop` call sites use `stop_event` and no `ticks=`. Default `./smoke-pause-replay` also re-run: exit 0, `step_stopped=ok`, `SMOKE-PAUSE-REPLAY OK` — PR-07 not weakened. |
+| UX-11 | PASS | `rg` for `installExtensions` / `.foxe` / `getContext` / `<canvas` over `web/src web/index.html doom_foxglove/` printed nothing (`ux11_ext_exit=1` = PASS). |
+| UX-12 | PASS | `no-06` printed; no `.agent/workstreams/06-*`. Resume `rg` (server.py, control.py, web) and pointerlock/mouse-look/rosbridge/comparison `rg` all printed nothing (exit 1 = PASS). |
+| UX-13 | PASS | Check prints `UX-13 walls-schema fallback_ids 4`. Quotes: `WALLS_TOPIC = "/doom/walls"` (`__init__.py:16`); `WALL_HEIGHT_M = 2.4` (`topics.py:72`) > `DEFAULT_CELL_M` (0.5); `def build_walls` (`topics.py:204`); `"walls": SceneUpdateChannel(topic=WALLS_TOPIC)` (`topics.py:266`); `sectors`/`sector.lines` on the shared path (`engine.py:279-283`), `is_blocking` filter (`world.py:249`); `if world.map_grid is not None` gates map **and** walls (`topics.py:370-373`) — `map_grid=None` publishes zero walls, hollow-room grid publishes exactly one walls SceneUpdate with `max(z) > 0.5`. `struct.unpack` `rg` hits only the exempt `record.py` and `ws_client.py` (PASS per contract). |
+| UX-14 | PASS | `./smoke` exits 0; stdout contains `SMOKE OK` and `walls=573` with `backend=vizdoom` → 573 ≥ 10. Check prints `UX-14 layouts-walls` and `UX-14 export-quote`: `/doom/walls` visible in ThreeDee `topics` of both `layouts/Debug.json` and `layouts/Replay.json`; `WALLS_TOPIC` referenced in `layouts_export.py`. |
+
+## Scope notes (per contract, not FAILs)
+
+- No browser or Foxglove Pro session opened; section F grades file text and headless smokes only.
+- 8764/8765 were free this run; both smokes bound the default ports directly.
+- Extra Gauge panels in all three layouts are explicitly allowed (RL-08/RL-09, RR-04 planner amendments).
+- `./web/check` is not named by any UX Check, but the critic re-gate lists it as an evaluator success command: run and exit 0 (`tsc --noEmit && vite build`, `EMBED CHECK OK`).
+
+## Entry-condition reminder (not a UX checkbox)
+
+Entry conditions (1) and (2) — KG capabilities `done` and 01/02/03 evaluator verdicts `done` — are owned by those loops and were not re-graded here. This verdict ticks UX-01…UX-14 against the gated section F; it does not by itself un-defer `ws_05_stunt_extras`.

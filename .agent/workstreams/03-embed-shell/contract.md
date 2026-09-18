@@ -46,9 +46,9 @@ Quote `DEFAULT_WS_URL = "ws://localhost:8765"` and `readWsUrl` (`?ws=` then `VIT
 
 ### ES-03 — Force-load `Play.json` and `Debug.json`
 
-- [x] Layout switching calls `selectLayout({ storageKey, opaqueLayout, force: true })` for both `layouts/Play.json` and `layouts/Debug.json`. Force is required so a stale stored layout cannot hide the exported Play/Debug panels.
+- [x] Layout switching calls `selectLayout({ storageKey, layout, force: true })` for both `layouts/Play.json` and `layouts/Debug.json`. `layout` is the programmatic `@foxglove/layout-api` tree (`version` + `content`) that `foxglove.layouts` emits. Do **not** pass that tree as `opaqueLayout` — that field is only for a JSON file exported from the Foxglove app, and the embed will show "Incompatible layout". Force is required so a stale stored layout cannot hide the exported Play/Debug panels.
 
-**Check:** `test -f layouts/Play.json && test -f layouts/Debug.json`. Quote both imports in `web/src/layouts.ts`. Quote `layoutParams("play")` and `layoutParams("debug")` — each returned object includes `storageKey`, `opaqueLayout`, and `force: true`. Quote `playSelectLayoutCompileCheck` and `debugSelectLayoutCompileCheck` in `web/src/compile-check.ts` (typed as `Parameters<FoxgloveViewer["selectLayout"]>[0]` or equivalent). Quote `viewer.selectLayout(layoutParams(...))` for both Play and Debug in `web/src/main.ts`. FAIL if `force` is missing, false, or only present on one layout.
+**Check:** `test -f layouts/Play.json && test -f layouts/Debug.json`. Quote both imports in `web/src/layouts.ts`. Quote `layoutParams("play")` and `layoutParams("debug")` — each returned object includes `storageKey`, `layout`, and `force: true`. Quote `playSelectLayoutCompileCheck` and `debugSelectLayoutCompileCheck` in `web/src/compile-check.ts` (typed as `Parameters<FoxgloveViewer["selectLayout"]>[0]` or equivalent). Quote `viewer.selectLayout(layoutParams(...))` for both Play and Debug in `web/src/main.ts`. FAIL if `force` is missing, false, or only present on one layout. FAIL if `opaqueLayout` is used for Play/Debug (SDK programmatic JSON is not an app export).
 
 ---
 
@@ -126,16 +126,50 @@ FAIL if any of those symbols are missing. FAIL if the evaluator's only evidence 
 
 ### ES-11 — Out-of-scope surfaces stay out of the host
 
-- [x] This workstream does not add MCAP recording, a Replay layout switcher, events, comparison, a remote-access gateway, mouse-look FPS, or a custom HUD extension. Mentions of Replay as "use the Foxglove app, not this host" in `web/README.md` do not FAIL.
+- [x] This workstream does not add events, comparison, a remote-access gateway, mouse-look FPS, or a custom `.foxe` HUD. 04 pause-replay may add `#pause-replay`, a `layouts/Replay.json` import, FileSource `type: "file"`, and `readControlUrl` to `web/` (`PR-nn` on `04-record-replay`). 05 demo UX polish may add `#key-hud`, `#hud-bars` / `#hud-health` / `#hud-armor` / `#hud-ammo`, `#replay-files`, and `POST /new-game` (`UX-nn` on `05-stunt-extras`). Those Replay/mcap/HUD hits do **not** FAIL. A comparison / spectator / rosbridge surface in `web/` still FAILs. Mentions of Replay as "use the Foxglove app, not this host" in `web/README.md` do not FAIL. Do **not** search `web/node_modules` or `web/dist`.
 
 **Check:**
 
 ```sh
-rg -n -e 'mcap' -e 'Replay' -e 'comparison' -e 'spectator' -e 'rosbridge' \
+rg -n -e 'comparison' -e 'spectator' -e 'rosbridge' \
   web/src web/index.html web/package.json
+echo es11_forbid_exit=$?
+python3 <<'PY'
+from pathlib import Path
+import re
+# Carve-out (quote this sentence): the only allowed Replay/mcap hits in web/src,
+# web/index.html, and web/package.json are 04 pause-replay lines that also match
+# pause-replay | readControlUrl | DEFAULT_CONTROL_URL | VITE_FOXGLOVE_CONTROL |
+# layouts/Replay.json | Replay.json | replayLayoutData | REPLAY_STORAGE_KEY | FileSource |
+# type: "file" | .mcap
+# plus 05 UX polish: key-hud | hud-bars | hud-health | hud-armor | hud-ammo |
+# replay-files | new-game
+allow = re.compile(
+    r"pause-replay|readControlUrl|DEFAULT_CONTROL_URL|VITE_FOXGLOVE_CONTROL|"
+    r"layouts/Replay\.json|Replay\.json|replayLayoutData|REPLAY_STORAGE_KEY|FileSource|"
+    r"type:\s*[\"']file[\"']|\.mcap|"
+    r"key-hud|hud-bars|hud-health|hud-armor|hud-ammo|replay-files|new-game"
+)
+needle = re.compile(r"mcap|Replay")
+roots = [Path("web/src"), Path("web/index.html"), Path("web/package.json")]
+files = []
+for root in roots:
+    if root.is_file():
+        files.append(root)
+    elif root.is_dir():
+        files.extend(sorted(p for p in root.rglob("*") if p.is_file()))
+bad = []
+for path in files:
+    text = path.read_text(encoding="utf-8")
+    for i, line in enumerate(text.splitlines(), 1):
+        if needle.search(line) and not allow.search(line):
+            bad.append("%s:%s:%s" % (path, i, line))
+assert not bad, bad
+print("ES-11 carve-out-ok", "files", len(files))
+PY
 ```
 
-Must print nothing. `rg -n 'Replay|MCAP|comparison|spectator' web/README.md` may mention those words only in an "out of scope" / "not this host" sentence — quote that sentence if it matches. FAIL if `web/src` grows a Replay `selectLayout`, an MCAP recorder, or a comparison/spectator UI.
+The `rg` invocation must print nothing (ripgrep exits 1 on no match — that is PASS; treat "no output" as the bar, not exit 0). The `$PY` carve-out PASSes when there are zero `mcap`/`Replay` hits **or** every such hit matches the allow regex above. FAIL if any printed `rg` line is a comparison / spectator / rosbridge product surface. FAIL if a `mcap`/`Replay` line is not a 04 pause-replay or 05 UX-polish carve-out (for example a Replay layout button that is not `#pause-replay` / `#replay-files`, a host MCAP recorder, or a `type: "recording"` Data Platform source). `rg -n 'Replay|MCAP|comparison|spectator' web/README.md` may mention those words only in an "out of scope" / "not this host" / pause-replay-docs sentence — quote that sentence if it matches.
 
 ---
 

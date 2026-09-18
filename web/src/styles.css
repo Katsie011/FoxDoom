@@ -93,6 +93,116 @@ button[aria-pressed="true"] {
   color: #f0b4b4;
 }
 
+#stage {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+#hud-column {
+  width: 11.5rem;
+  flex: 0 0 11.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 0.75rem 0.7rem;
+  border-right: 1px solid var(--line);
+  background: #161821;
+  overflow: auto;
+}
+
+#key-hud {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+#key-hud .key-row {
+  display: flex;
+  gap: 0.3rem;
+}
+
+#key-hud kbd {
+  display: inline-flex;
+  min-width: 2rem;
+  justify-content: center;
+  padding: 0.35rem 0.45rem;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: #2a2e3d;
+  font-family: inherit;
+  font-size: 0.8rem;
+}
+
+#key-hud kbd.pressed,
+#key-hud kbd[aria-pressed="true"] {
+  background: #3d3420;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+#hud-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  --hud-health-max: 200;
+  --hud-armor-max: 200;
+  --hud-ammo-max: 300;
+}
+
+.hud-bar span {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-bottom: 0.15rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.hud-track {
+  height: 0.55rem;
+  background: #2a2e3d;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+#hud-health,
+#hud-armor,
+#hud-ammo {
+  height: 100%;
+  width: 0;
+}
+
+#hud-health {
+  background: #c45c5c;
+}
+
+#hud-armor {
+  background: #5c8ac4;
+}
+
+#hud-ammo {
+  background: #c2a36b;
+}
+
+#replay-files {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+}
+
+#replay-files[hidden] {
+  display: none;
+}
+
+#replay-files button {
+  text-align: left;
+  font-size: 0.75rem;
+}
+
 #foxglove {
   flex: 1;
   min-height: 0;

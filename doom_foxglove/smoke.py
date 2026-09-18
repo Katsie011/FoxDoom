@@ -145,6 +145,7 @@ def main() -> int:
         saw_player = False
         saw_log = False
         entity_count = 0
+        wall_count = 0
 
         wire = prove_client_publish(DEFAULT_HOST, bound, listener)
         print(
@@ -199,6 +200,9 @@ def main() -> int:
                 saw_player = True
             if published.get("logs"):
                 saw_log = True
+            walls = published.get("walls")
+            if isinstance(walls, dict) and "count" in walls:
+                wall_count = max(wall_count, int(walls.get("count") or 0))
             if layout_probe is not None:
                 layout_probe.drain(0.05)
 
@@ -270,6 +274,7 @@ def main() -> int:
                 f"entity_count={entity_count} player={PLAYER_TOPIC} "
                 f"log={LOG_TOPIC} backend={info.backend}"
             )
+            print(f"walls={wall_count}")
         return 0
     except Exception as exc:
         return _fail(repr(exc))

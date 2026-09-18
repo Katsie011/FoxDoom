@@ -1,13 +1,16 @@
+import type { Layout } from "@foxglove/embed";
 import playLayout from "../../layouts/Play.json";
 import debugLayout from "../../layouts/Debug.json";
-import { DEBUG_STORAGE_KEY, PLAY_STORAGE_KEY, type LayoutName } from "./config";
+import replayLayout from "../../layouts/Replay.json";
+import { DEBUG_STORAGE_KEY, PLAY_STORAGE_KEY, REPLAY_STORAGE_KEY, type LayoutName } from "./config";
 
-export const playLayoutData: unknown = playLayout;
-export const debugLayoutData: unknown = debugLayout;
+export const playLayoutData = playLayout as Layout;
+export const debugLayoutData = debugLayout as Layout;
+export const replayLayoutData = replayLayout as Layout;
 
 export type SelectLayoutParams = {
   storageKey: string;
-  opaqueLayout?: unknown;
+  layout?: Layout;
   force?: boolean;
 };
 
@@ -15,13 +18,21 @@ export function layoutParams(name: LayoutName): SelectLayoutParams {
   if (name === "debug") {
     return {
       storageKey: DEBUG_STORAGE_KEY,
-      opaqueLayout: debugLayoutData,
+      layout: debugLayoutData,
       force: true,
     };
   }
   return {
     storageKey: PLAY_STORAGE_KEY,
-    opaqueLayout: playLayoutData,
+    layout: playLayoutData,
+    force: true,
+  };
+}
+
+export function replayLayoutParams(): SelectLayoutParams {
+  return {
+    storageKey: REPLAY_STORAGE_KEY,
+    layout: replayLayoutData,
     force: true,
   };
 }

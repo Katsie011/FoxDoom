@@ -36,6 +36,15 @@ export function motionActive(motion: Motion): boolean {
 }
 
 type Field = keyof Motion;
+export type MotionListener = (motion: Motion) => void;
+
+const KEY_HUD_FIELDS: { field: Field; label: string }[] = [
+  { field: "forward", label: "W" },
+  { field: "left", label: "A" },
+  { field: "back", label: "S" },
+  { field: "right", label: "D" },
+  { field: "fire", label: "Space" },
+];
 
 /**
  * WASD tank controls + Space fire. setKeybindings only reports presses inside
@@ -53,8 +62,17 @@ export class HoldController {
   private timer: number | undefined;
   private lastTwist = JSON.stringify(ZERO_TWIST);
   private lastFire = false;
+  private listeners: MotionListener[] = [];
 
   constructor(private readonly publisher: ClientPublisher) {}
+
+  subscribe(onMotion: MotionListener): () => void {
+    this.listeners.push(onMotion);
+    onMotion({ ...this.motion });
+    return () => {
+      this.listeners = this.listeners.filter((listener) => listener !== onMotion);
+    };
+  }
 
   press(field: Field): void {
     this.motion[field] = true;
@@ -144,7 +162,32 @@ export class HoldController {
       this.publisher.publishButtons(buttonsFromMotion(this.motion));
       this.lastFire = this.motion.fire;
     }
+    const snapshot = { ...this.motion };
+    for (const onMotion of this.listeners) {
+      onMotion(snapshot);
+    }
   }
+}
+
+export function bindKeyHud(hold: HoldController): void {
+  const root = document.getElementById("key-hud");
+  if (!root) {
+    return;
+  }
+  const keys = new Map<Field, HTMLElement>();
+  KEY_HUD_FIELDS.forEach(({ field }) => {
+    const el = root.querySelector<HTMLElement>(`[data-key="${field}"]`);
+    if (el) {
+      keys.set(field, el);
+    }
+  });
+  hold.subscribe((motion) => {
+    keys.forEach((el, field) => {
+      const on = motion[field];
+      el.classList.toggle("pressed", on);
+      el.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+  });
 }
 
 function fieldFromCode(code: string): Field | undefined {

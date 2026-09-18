@@ -23,6 +23,7 @@ from doom_foxglove import (
     TF_TOPIC,
     TICK_HZ,
 )
+from doom_foxglove.control import ControlState, start_control, stop_control
 from doom_foxglove.engine import Engine, make_engine
 from doom_foxglove.jpeg import encode_jpeg
 from doom_foxglove.record import default_recording_path, open_recording
@@ -168,6 +169,7 @@ def run_loop(
     forever: bool = True,
     ticks: int | None = None,
     on_frame=None,
+    stop_event=None,
 ) -> int:
     cam = camera_channel()
     extra = world_channels()
@@ -177,6 +179,8 @@ def run_loop(
     try:
         engine.reset()
         while True:
+            if stop_event is not None and stop_event.is_set():
+                break
             started = time.perf_counter()
             command = listener.snapshot()
             frame = engine.step(command)
@@ -193,7 +197,11 @@ def run_loop(
                 break
             leftover = period - (time.perf_counter() - started)
             if leftover > 0:
-                time.sleep(leftover)
+                if stop_event is not None:
+                    if stop_event.wait(timeout=leftover):
+                        break
+                else:
+                    time.sleep(leftover)
     finally:
         pass
     return published
@@ -219,6 +227,7 @@ def main(argv: list[str] | None = None) -> int:
         default=None,
         help="MCAP sidecar path (default: recordings/doom-<utc-timestamp>.mcap)",
     )
+    parser.add_argument("--control-port", type=int, default=8764)
     args = parser.parse_args(argv)
 
     engine, info = make_engine(fetch_iwad=args.fetch_iwad, prefer_vizdoom=not args.fallback)
@@ -232,21 +241,44 @@ def main(argv: list[str] | None = None) -> int:
     )
     listener = TeleopListener()
     server = start_ws(listener, host=args.host, port=args.port)
+    state = ControlState()
+    state.engine = engine
+    state.record_enabled = not args.no_record
     writer = None
     if not args.no_record:
         rec_path = Path(args.recording) if args.recording else default_recording_path()
         writer = open_recording(rec_path)
+        state.writer = writer
+        state.recording = rec_path
         print(f"recording {rec_path}")
+    control = start_control(state, host=args.host, port=args.control_port)
+    print(f"control http://{args.host}:{int(control.server_port)}")
     try:
-        run_loop(engine, listener, forever=True)
+        while True:
+            run_loop(engine, listener, forever=True, stop_event=state.stop_event)
+            if state.take_new_game():
+                state.stop_event.clear()
+                continue
+            # Pause must not exit the process: the embed POSTs /pause then GETs
+            # /recording. Idle until POST /new-game or KeyboardInterrupt, then
+            # run_loop again for a fresh episode.
+            print("paused; serving GET /recording until new-game or interrupt")
+            while not state.wait_new_game(timeout=0.5):
+                pass
+            state.take_new_game()
+            state.stop_event.clear()
     except KeyboardInterrupt:
         print("stopping")
     finally:
-        if writer is not None:
+        state.stop_event.set()
+        leftover = state.writer if writer is None else state.writer or writer
+        if leftover is not None:
             try:
-                writer.close()
+                leftover.close()
             except Exception:
                 pass
+            state.writer = None
+        stop_control(control)
         try:
             server.stop()
         except Exception:
