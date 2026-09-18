@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Foxglove DOOM</title>
+  </head>
+  <body>
+    <header id="chrome">
+      <div class="brand">
+        <h1>Foxglove DOOM</h1>
+        <p>
+          This is <strong>Foxglove Visualization</strong> embedded in a host page. The marine’s
+          camera is a stock Image panel. There is no host-canvas game view. Drive with the Teleop
+          D-pad or WASD; Space fires. Both paths publish <code>/cmd_vel</code> and
+          <code>/doom/buttons</code>. The Teleop panel stays in the layout.
+        </p>
+      </div>
+      <div class="controls">
+        <div class="layouts" role="group" aria-label="Layout">
+          <button type="button" id="layout-play" data-layout="play">Play</button>
+          <button type="button" id="layout-debug" data-layout="debug">Debug</button>
+        </div>
+        <p id="ws-line"><span>WebSocket</span> <code id="ws-url"></code></p>
+        <p id="status">Starting…</p>
+        <p id="secure-warning" hidden>
+          Foxglove embed needs a secure context (HTTPS or localhost). This page is neither; the
+          iframe will not start.
+        </p>
+      </div>
+    </header>
+    <main id="foxglove" aria-label="Embedded Foxglove"></main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "content": {
+    "type": "split",
+    "direction": "row",
+    "items": [
+      {
+        "proportion": 3,
+        "content": {
+          "type": "panel",
+          "panelType": "Image",
+          "config": {
+            "imageMode": {
+              "imageTopic": "/doom/camera"
+            }
+          },
+          "title": "Camera",
+          "version": 1
+        }
+      },
+      {
+        "proportion": 1,
+        "content": {
+          "type": "split",
+          "direction": "column",
+          "items": [
+            {
+              "proportion": 1,
+              "content": {
+                "type": "panel",
+                "panelType": "Teleop",
+                "config": {
+                  "topic": "/cmd_vel",
+                  "publishRate": 35,
+                  "upButton": {
+                    "field": "linear-x",
+                    "value": 1.0
+                  },
+                  "downButton": {
+                    "field": "linear-x",
+                    "value": -1.0
+                  },
+                  "leftButton": {
+                    "field": "angular-z",
+                    "value": 1.0
+                  },
+                  "rightButton": {
+                    "field": "angular-z",
+                    "value": -1.0
+                  },
+                  "stopButton": {
+                    "field": "linear-x",
+                    "value": 0.0
+                  },
+                  "autoSendStopOnRelease": true
+                },
+                "title": "Teleop",
+                "version": 1
+              }
+            },
+            {
+              "proportion": 2,
+              "content": {
+                "type": "split",
+                "direction": "column",
+                "items": [
+                  {
+                    "proportion": 1,
+                    "content": {
+                      "type": "panel",
+                      "panelType": "Gauge",
+                      "config": {
+                        "path": "/doom/player.health",
+                        "style": "dial",
+                        "minValue": 0,
+                        "maxValue": 200,
+                        "tickInterval": 0.1,
+                        "showTicks": false,
+                        "colorMode": "colormap",
+                        "colorMap": "red-yellow-green",
+                        "mirrorColorAtOrigin": false
+                      },
+                      "title": "Health",
+                      "version": 1
+                    }
+                  },
+                  {
+                    "proportion": 1,
+                    "content": {
+                      "type": "panel",
+                      "panelType": "Gauge",
+                      "config": {
+                        "path": "/doom/player.armor",
+                        "style": "dial",
+                        "minValue": 0,
+                        "maxValue": 200,
+                        "tickInterval": 0.1,
+                        "showTicks": false,
+                        "colorMode": "colormap",
+                        "colorMap": "red-yellow-green",
+                        "mirrorColorAtOrigin": false
+                      },
+                      "title": "Armor",
+                      "version": 1
+                    }
+                  },
+                  {
+                    "proportion": 1,
+                    "content": {
+                      "type": "panel",
+                      "panelType": "Gauge",
+                      "config": {
+                        "path": "/doom/player.ammo",
+                        "style": "dial",
+                        "minValue": 0,
+                        "maxValue": 300,
+                        "tickInterval": 0.1,
+                        "showTicks": false,
+                        "colorMode": "colormap",
+                        "colorMap": "red-yellow-green",
+                        "mirrorColorAtOrigin": false
+                      },
+                      "title": "Ammo",
+                      "version": 1
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

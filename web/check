@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Headless embed-shell smoke: typecheck FoxgloveViewer options and build the host page.
+# Does not open a browser.
+set -euo pipefail
+cd "$(dirname "$0")"
+if [[ ! -d node_modules ]]; then
+  npm install --no-audit --no-fund
+fi
+npm run check
+echo "EMBED CHECK OK"

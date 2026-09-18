@@ -1,0 +1,39 @@
+---
+description: Resume Foxglove DOOM from .agent/ on disk. Allowed models only. Write to files, not chat.
+alwaysApply: true
+---
+
+# Agent OS — Foxglove DOOM
+
+Resume from disk. Chat is not a source of truth.
+
+Read in this order before acting:
+
+1. `.agent/GOAL.md`
+2. The relevant `.agent/workstreams/<nn>-<name>/contract.md` plus `progress.md`, and `PLAN.md` for product phases
+3. `.agent/knowledge-graph/nodes.jsonl` and `edges.jsonl`, with `SCHEMA.md` for queries
+4. `.agent/COORDINATION.md` as needed
+5. That workstream's `log.md` and `eval.md` if present
+
+Do not read the chat transcript to recover decisions. If an answer is not on disk, write it down.
+
+## Allowed models
+
+The Task tool `model` field must be one of these two slugs, spelled exactly:
+
+- `cursor-grok-4.6-high-fast` — supervisor, planner, generator, librarian
+- `kimi-k3-high` — contract critic, evaluator
+
+Banned: `claude-opus-5-thinking-high`, `gpt-5.6-sol-medium`, `composer-2.5-fast`, `inherit`.
+
+A model that produces a deliverable may not grade it. Generators are Grok. Critics and evaluators are Kimi K3.
+
+## Write to files, not chat
+
+Durable state lives under `.agent/`. Every run ends by appending to the owning workstream `log.md` (`## [YYYY-MM-DD] op | title`) and, when facts changed, appending triples to `nodes.jsonl` / `edges.jsonl`. Never rewrite those JSONL files in place. Never tick contract checkboxes as a generator.
+
+Self-check from repo root:
+
+```sh
+python3 .agent/knowledge-graph/validate.py --harness && echo "HARNESS OK"
+```

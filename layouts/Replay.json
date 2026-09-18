@@ -1,0 +1,187 @@
+{
+  "version": 1,
+  "content": {
+    "type": "split",
+    "direction": "column",
+    "items": [
+      {
+        "proportion": 3,
+        "content": {
+          "type": "split",
+          "direction": "row",
+          "items": [
+            {
+              "proportion": 2,
+              "content": {
+                "type": "panel",
+                "panelType": "Image",
+                "config": {
+                  "imageMode": {
+                    "imageTopic": "/doom/camera"
+                  }
+                },
+                "title": "Camera",
+                "version": 1
+              }
+            },
+            {
+              "proportion": 2,
+              "content": {
+                "type": "panel",
+                "panelType": "ThreeDee",
+                "config": {
+                  "topics": {
+                    "/doom/map": {
+                      "visible": true,
+                      "colorMode": "colormap",
+                      "colorField": "occupancy",
+                      "colorMap": "turbo",
+                      "minValue": 0,
+                      "maxValue": 100,
+                      "frameLocked": true
+                    },
+                    "/doom/entities": {
+                      "visible": true
+                    }
+                  },
+                  "followTf": "base_link",
+                  "fixedFrame": "map",
+                  "followMode": "follow-pose"
+                },
+                "title": "Map",
+                "version": 1
+              }
+            },
+            {
+              "proportion": 1,
+              "content": {
+                "type": "split",
+                "direction": "column",
+                "items": [
+                  {
+                    "proportion": 1,
+                    "content": {
+                      "type": "panel",
+                      "panelType": "Gauge",
+                      "config": {
+                        "path": "/doom/player.health",
+                        "style": "dial",
+                        "minValue": 0,
+                        "maxValue": 200,
+                        "tickInterval": 0.1,
+                        "showTicks": false,
+                        "colorMode": "colormap",
+                        "colorMap": "red-yellow-green",
+                        "mirrorColorAtOrigin": false
+                      },
+                      "title": "Health",
+                      "version": 1
+                    }
+                  },
+                  {
+                    "proportion": 1,
+                    "content": {
+                      "type": "panel",
+                      "panelType": "Gauge",
+                      "config": {
+                        "path": "/doom/player.armor",
+                        "style": "dial",
+                        "minValue": 0,
+                        "maxValue": 200,
+                        "tickInterval": 0.1,
+                        "showTicks": false,
+                        "colorMode": "colormap",
+                        "colorMap": "red-yellow-green",
+                        "mirrorColorAtOrigin": false
+                      },
+                      "title": "Armor",
+                      "version": 1
+                    }
+                  },
+                  {
+                    "proportion": 1,
+                    "content": {
+                      "type": "panel",
+                      "panelType": "Gauge",
+                      "config": {
+                        "path": "/doom/player.ammo",
+                        "style": "dial",
+                        "minValue": 0,
+                        "maxValue": 300,
+                        "tickInterval": 0.1,
+                        "showTicks": false,
+                        "colorMode": "colormap",
+                        "colorMap": "red-yellow-green",
+                        "mirrorColorAtOrigin": false
+                      },
+                      "title": "Ammo",
+                      "version": 1
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "proportion": 1,
+        "content": {
+          "type": "split",
+          "direction": "row",
+          "items": [
+            {
+              "proportion": 1,
+              "content": {
+                "type": "panel",
+                "panelType": "Plot",
+                "config": {
+                  "paths": [
+                    {
+                      "label": "health",
+                      "value": "/doom/player.health"
+                    },
+                    {
+                      "label": "ammo",
+                      "value": "/doom/player.ammo"
+                    }
+                  ],
+                  "showLegend": true,
+                  "xAxisVal": "timestamp"
+                },
+                "title": "Health",
+                "version": 1
+              }
+            },
+            {
+              "proportion": 1,
+              "content": {
+                "type": "panel",
+                "panelType": "Log",
+                "config": {
+                  "minLogLevel": 1,
+                  "topicToRender": "/doom/log"
+                },
+                "title": "Log",
+                "version": 1
+              }
+            },
+            {
+              "proportion": 1,
+              "content": {
+                "type": "panel",
+                "panelType": "RawMessages",
+                "config": {
+                  "expansion": "all",
+                  "topicPath": "/doom/player"
+                },
+                "title": "Player",
+                "version": 1
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

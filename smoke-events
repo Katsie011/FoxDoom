@@ -1,0 +1,12 @@
+#!/bin/sh
+# Smoke: at least one /doom/events message live and in recordings/smoke-events.mcap.
+set -e
+ROOT=$(CDPATH= cd -- "$(dirname "$0")" && pwd)
+cd "$ROOT"
+if [ -x "$ROOT/.venv/bin/python" ]; then
+  PY="$ROOT/.venv/bin/python"
+else
+  PY="${PYTHON:-python3}"
+fi
+export PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}"
+exec "$PY" -m doom_foxglove.smoke_events "$@"

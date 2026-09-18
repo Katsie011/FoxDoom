@@ -1,0 +1,23 @@
+{
+  "name": "doom-foxglove-embed",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Host page that embeds Foxglove for Foxglove DOOM. No host-canvas game view.",
+  "scripts": {
+    "dev": "vite --host localhost --port 5173",
+    "build": "tsc --noEmit && vite build",
+    "check": "tsc --noEmit && vite build",
+    "preview": "vite preview --host localhost --port 5173"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@foxglove/embed": "^0.79.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2",
+    "vite": "^7.3.6"
+  }
+}

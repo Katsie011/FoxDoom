@@ -1,0 +1,109 @@
+{"from": "dec_vizdoom_engine", "type": "DECIDES", "to": "ws_01_hero_loop", "ts": "2026-09-18", "note": "ViZDoom is what the hero loop drives."}
+{"from": "dec_foxglove_sdk_ws", "type": "DECIDES", "to": "cap_live_ws_camera_teleop", "ts": "2026-09-18", "note": "The live capability is an SDK WebSocket, not rosbridge."}
+{"from": "dec_freedoom_legal", "type": "DECIDES", "to": "ws_01_hero_loop", "ts": "2026-09-18", "note": "The hero loop may only load Freedoom or shareware."}
+{"from": "dec_teleop_twist", "type": "DECIDES", "to": "ws_01_hero_loop", "ts": "2026-09-18", "note": "Twist on /cmd_vel and buttons JSON are the hero-loop control path."}
+{"from": "dec_embed_viz", "type": "DECIDES", "to": "ws_03_embed_shell", "ts": "2026-09-18", "note": "Embedded Foxglove is what the embed-shell workstream builds."}
+{"from": "dec_no_canvas", "type": "DECIDES", "to": "ws_01_hero_loop", "ts": "2026-09-18", "note": "The camera topic must be a Foxglove Image subscription from the first playable loop."}
+{"from": "dec_phase_gating", "type": "DECIDES", "to": "ws_05_stunt_extras", "ts": "2026-09-18", "note": "Phase gating is why extras stay deferred until 01 through 03 are done."}
+{"from": "dec_state_on_disk", "type": "DECIDES", "to": "ws_00_harness", "ts": "2026-09-18", "note": "State-on-disk is why the harness workstream exists."}
+{"from": "dec_cheap_models", "type": "DECIDES", "to": "ws_00_harness", "ts": "2026-09-18", "note": "Allowed-model slugs are recorded in the harness COORDINATION file and Cursor rule."}
+{"from": "dec_producer_neq_judge", "type": "DECIDES", "to": "ws_00_harness", "ts": "2026-09-18", "note": "Producer-not-judge is a harness coordination rule."}
+{"from": "dec_stock_panels_only", "type": "DECIDES", "to": "ws_02_robotics_layout", "ts": "2026-09-18", "note": "Stock panels constrain how the robotics layout is built."}
+{"from": "dec_tank_controls", "type": "DECIDES", "to": "ws_01_hero_loop", "ts": "2026-09-18", "note": "Tank controls are the Twist mapping the hero loop implements."}
+{"from": "dec_no_canvas", "type": "DECIDES", "to": "ws_03_embed_shell", "ts": "2026-09-18", "note": "The embed host must not grow a canvas renderer."}
+{"from": "ws_01_hero_loop", "type": "DEPENDS_ON", "to": "ws_00_harness", "ts": "2026-09-18", "note": "Product code reads GOAL, contracts, and the graph the harness writes."}
+{"from": "ws_02_robotics_layout", "type": "DEPENDS_ON", "to": "ws_01_hero_loop", "ts": "2026-09-18", "note": "3D layout sits on a working camera and teleop loop."}
+{"from": "ws_03_embed_shell", "type": "DEPENDS_ON", "to": "ws_02_robotics_layout", "ts": "2026-09-18", "note": "The embed switches Play and Debug layouts that 02 exports."}
+{"from": "ws_04_record_replay", "type": "DEPENDS_ON", "to": "ws_03_embed_shell", "ts": "2026-09-18", "note": "Recording a session nobody can play live is a file, not a stunt."}
+{"from": "ws_05_stunt_extras", "type": "DEPENDS_ON", "to": "ws_03_embed_shell", "ts": "2026-09-18", "note": "Extras wait until the embed is demo-stable; 01 through 03 must be done."}
+{"from": "cap_3d_map_hud", "type": "DEPENDS_ON", "to": "cap_live_ws_camera_teleop", "ts": "2026-09-18", "note": "HUD and 3D are useless without a live camera and teleop."}
+{"from": "cap_embed_page", "type": "DEPENDS_ON", "to": "cap_3d_map_hud", "ts": "2026-09-18", "note": "The embed switches layouts that include 3D and HUD."}
+{"from": "cap_mcap_replay", "type": "DEPENDS_ON", "to": "cap_embed_page", "ts": "2026-09-18", "note": "Replay is the same layout against a recording of a live embed session."}
+{"from": "cap_stunt_extras", "type": "DEPENDS_ON", "to": "cap_embed_page", "ts": "2026-09-18", "note": "Events and spectators assume a public embed exists."}
+{"from": "dec_foxglove_sdk_ws", "type": "EVIDENCED_BY", "to": "repo_foxglove_sdk", "ts": "2026-09-18", "note": "start_server and ClientPublish live in foxglove-sdk."}
+{"from": "dec_vizdoom_engine", "type": "EVIDENCED_BY", "to": "repo_vizdoom", "ts": "2026-09-18", "note": "Farama ViZDoom is the engine repository."}
+{"from": "dec_freedoom_legal", "type": "EVIDENCED_BY", "to": "repo_freedoom", "ts": "2026-09-18", "note": "Freedoom is the legal IWAD source."}
+{"from": "dec_embed_viz", "type": "EVIDENCED_BY", "to": "repo_lunar_lander", "ts": "2026-09-18", "note": "lunar-lander already uses the SDK as a game UI."}
+{"from": "vizdoom_macos_build", "type": "EVIDENCED_BY", "to": "repo_vizdoom", "ts": "2026-09-18", "note": "ViZDoom install docs name macOS wheel and source-build constraints."}
+{"from": "vizdoom_macos_build", "type": "EVIDENCED_BY", "to": "hw_mac_dev", "ts": "2026-09-18", "note": "This darwin 25 laptop is the machine the risk is about."}
+{"from": "commercial_wad", "type": "EVIDENCED_BY", "to": "repo_freedoom", "ts": "2026-09-18", "note": "Freedoom exists so a commercial IWAD is unnecessary."}
+{"from": "vizdoom_macos_build", "type": "BLOCKS", "to": "ws_01_hero_loop", "ts": "2026-09-18", "note": "If ViZDoom cannot import or init, the preferred engine path is blocked."}
+{"from": "vizdoom_macos_build", "type": "BLOCKS", "to": "cap_live_ws_camera_teleop", "ts": "2026-09-18", "note": "A missing engine blocks the live camera and teleop capability until fallback or install lands."}
+{"from": "ws_01_hero_loop", "type": "IMPLEMENTS", "to": "cap_live_ws_camera_teleop", "ts": "2026-09-18", "note": "The hero loop is the live camera and teleop capability."}
+{"from": "ws_02_robotics_layout", "type": "IMPLEMENTS", "to": "cap_3d_map_hud", "ts": "2026-09-18", "note": "Robotics layout is the 3D map and HUD capability."}
+{"from": "ws_03_embed_shell", "type": "IMPLEMENTS", "to": "cap_embed_page", "ts": "2026-09-18", "note": "Embed shell is the host-page capability."}
+{"from": "ws_04_record_replay", "type": "IMPLEMENTS", "to": "cap_mcap_replay", "ts": "2026-09-18", "note": "Record/replay is the MCAP capability."}
+{"from": "ws_05_stunt_extras", "type": "IMPLEMENTS", "to": "cap_stunt_extras", "ts": "2026-09-18", "note": "Stunt extras is the events/comparison/agent/spectator capability."}
+{"from": "H-01", "type": "IMPLEMENTS", "to": "ws_00_harness", "ts": "2026-09-18", "note": "Harness contract item H-01 is delivered by workstream 00."}
+{"from": "H-02", "type": "IMPLEMENTS", "to": "ws_00_harness", "ts": "2026-09-18", "note": "Harness contract item H-02 is delivered by workstream 00."}
+{"from": "H-03", "type": "IMPLEMENTS", "to": "ws_00_harness", "ts": "2026-09-18", "note": "Harness contract item H-03 is delivered by workstream 00."}
+{"from": "H-04", "type": "IMPLEMENTS", "to": "ws_00_harness", "ts": "2026-09-18", "note": "Harness contract item H-04 is delivered by workstream 00."}
+{"from": "H-05", "type": "IMPLEMENTS", "to": "ws_00_harness", "ts": "2026-09-18", "note": "Harness contract item H-05 is delivered by workstream 00."}
+{"from": "H-06", "type": "IMPLEMENTS", "to": "ws_00_harness", "ts": "2026-09-18", "note": "Harness contract item H-06 is delivered by workstream 00."}
+{"from": "H-07", "type": "IMPLEMENTS", "to": "ws_00_harness", "ts": "2026-09-18", "note": "Harness contract item H-07 is delivered by workstream 00."}
+{"from": "H-08", "type": "IMPLEMENTS", "to": "ws_00_harness", "ts": "2026-09-18", "note": "Harness contract item H-08 is delivered by workstream 00."}
+{"from": "H-09", "type": "IMPLEMENTS", "to": "ws_00_harness", "ts": "2026-09-18", "note": "Harness contract item H-09 is delivered by workstream 00."}
+{"from": "H-10", "type": "IMPLEMENTS", "to": "ws_00_harness", "ts": "2026-09-18", "note": "Harness contract item H-10 is delivered by workstream 00."}
+{"from": "H-11", "type": "IMPLEMENTS", "to": "ws_00_harness", "ts": "2026-09-18", "note": "Harness contract item H-11 is delivered by workstream 00."}
+{"from": "H-12", "type": "IMPLEMENTS", "to": "ws_00_harness", "ts": "2026-09-18", "note": "Harness contract item H-12 is delivered by workstream 00."}
+{"from": "H-13", "type": "IMPLEMENTS", "to": "ws_00_harness", "ts": "2026-09-18", "note": "Harness contract item H-13 is delivered by workstream 00."}
+{"from": "H-14", "type": "IMPLEMENTS", "to": "ws_00_harness", "ts": "2026-09-18", "note": "Harness contract item H-14 is delivered by workstream 00."}
+{"from": "H-15", "type": "IMPLEMENTS", "to": "ws_00_harness", "ts": "2026-09-18", "note": "Harness contract item H-15 is delivered by workstream 00."}
+{"from": "H-16", "type": "IMPLEMENTS", "to": "ws_00_harness", "ts": "2026-09-18", "note": "Harness contract item H-16 is delivered by workstream 00."}
+{"from": "H-17", "type": "IMPLEMENTS", "to": "ws_00_harness", "ts": "2026-09-18", "note": "Harness contract item H-17 is delivered by workstream 00."}
+{"from": "H-18", "type": "IMPLEMENTS", "to": "ws_00_harness", "ts": "2026-09-18", "note": "Harness contract item H-18 is delivered by workstream 00."}
+{"from": "H-19", "type": "IMPLEMENTS", "to": "ws_00_harness", "ts": "2026-09-18", "note": "Harness contract item H-19 is delivered by workstream 00."}
+{"from": "H-20", "type": "IMPLEMENTS", "to": "ws_00_harness", "ts": "2026-09-18", "note": "Harness contract item H-20 is delivered by workstream 00."}
+{"from": "H-21", "type": "IMPLEMENTS", "to": "ws_00_harness", "ts": "2026-09-18", "note": "Harness contract item H-21 is delivered by workstream 00."}
+{"from": "H-22", "type": "IMPLEMENTS", "to": "ws_00_harness", "ts": "2026-09-18", "note": "Harness contract item H-22 is delivered by workstream 00."}
+{"from": "HL-01", "type": "IMPLEMENTS", "to": "ws_01_hero_loop", "ts": "2026-09-18", "note": "Hero-loop contract item HL-01 is owned by workstream 01."}
+{"from": "HL-02", "type": "IMPLEMENTS", "to": "ws_01_hero_loop", "ts": "2026-09-18", "note": "Hero-loop contract item HL-02 is owned by workstream 01."}
+{"from": "HL-03", "type": "IMPLEMENTS", "to": "ws_01_hero_loop", "ts": "2026-09-18", "note": "Hero-loop contract item HL-03 is owned by workstream 01."}
+{"from": "HL-04", "type": "IMPLEMENTS", "to": "ws_01_hero_loop", "ts": "2026-09-18", "note": "Hero-loop contract item HL-04 is owned by workstream 01."}
+{"from": "HL-05", "type": "IMPLEMENTS", "to": "ws_01_hero_loop", "ts": "2026-09-18", "note": "Hero-loop contract item HL-05 is owned by workstream 01."}
+{"from": "HL-06", "type": "IMPLEMENTS", "to": "ws_01_hero_loop", "ts": "2026-09-18", "note": "Hero-loop contract item HL-06 is owned by workstream 01."}
+{"from": "HL-07", "type": "IMPLEMENTS", "to": "ws_01_hero_loop", "ts": "2026-09-18", "note": "Hero-loop contract item HL-07 is owned by workstream 01."}
+{"from": "HL-08", "type": "IMPLEMENTS", "to": "ws_01_hero_loop", "ts": "2026-09-18", "note": "Hero-loop contract item HL-08 is owned by workstream 01."}
+{"from": "HL-09", "type": "IMPLEMENTS", "to": "ws_01_hero_loop", "ts": "2026-09-18", "note": "Hero-loop contract item HL-09 is owned by workstream 01."}
+{"from": "HL-10", "type": "IMPLEMENTS", "to": "ws_01_hero_loop", "ts": "2026-09-18", "note": "Hero-loop contract item HL-10 is owned by workstream 01."}
+{"from": "HL-11", "type": "IMPLEMENTS", "to": "ws_01_hero_loop", "ts": "2026-09-18", "note": "Hero-loop contract item HL-11 is owned by workstream 01."}
+{"from": "HL-12", "type": "IMPLEMENTS", "to": "ws_01_hero_loop", "ts": "2026-09-18", "note": "Hero-loop contract item HL-12 is owned by workstream 01."}
+{"from": "HL-13", "type": "IMPLEMENTS", "to": "ws_01_hero_loop", "ts": "2026-09-18", "note": "Hero-loop contract item HL-13 is owned by workstream 01."}
+{"from": "HL-14", "type": "IMPLEMENTS", "to": "ws_01_hero_loop", "ts": "2026-09-18", "note": "Hero-loop contract item HL-14 is owned by workstream 01."}
+{"from": "dec_embed_viz", "type": "EVIDENCED_BY", "to": "repo_foxglove_embed", "ts": "2026-09-18", "note": "The embed host is built on @foxglove/embed with parent-owned live transport, not a custom canvas."}
+{"from": "dec_foxglove_sdk_ws", "type": "DECIDES", "to": "cap_mcap_replay", "ts": "2026-09-18", "note": "The same foxglove-sdk Context writes the live WebSocket and the MCAP sidecar."}
+{"from": "dec_stock_panels_only", "type": "DECIDES", "to": "ws_04_record_replay", "ts": "2026-09-18", "note": "Replay uses stock Image, 3D, Gauge, and Log panels with Teleop hidden."}
+{"from": "RL-01", "type": "IMPLEMENTS", "to": "ws_02_robotics_layout", "ts": "2026-09-18", "note": "Robotics-layout contract item RL-01 is owned by workstream 02."}
+{"from": "RL-02", "type": "IMPLEMENTS", "to": "ws_02_robotics_layout", "ts": "2026-09-18", "note": "Robotics-layout contract item RL-02 is owned by workstream 02."}
+{"from": "RL-03", "type": "IMPLEMENTS", "to": "ws_02_robotics_layout", "ts": "2026-09-18", "note": "Robotics-layout contract item RL-03 is owned by workstream 02."}
+{"from": "RL-04", "type": "IMPLEMENTS", "to": "ws_02_robotics_layout", "ts": "2026-09-18", "note": "Robotics-layout contract item RL-04 is owned by workstream 02."}
+{"from": "RL-05", "type": "IMPLEMENTS", "to": "ws_02_robotics_layout", "ts": "2026-09-18", "note": "Robotics-layout contract item RL-05 is owned by workstream 02."}
+{"from": "RL-06", "type": "IMPLEMENTS", "to": "ws_02_robotics_layout", "ts": "2026-09-18", "note": "Robotics-layout contract item RL-06 is owned by workstream 02."}
+{"from": "RL-07", "type": "IMPLEMENTS", "to": "ws_02_robotics_layout", "ts": "2026-09-18", "note": "Robotics-layout contract item RL-07 is owned by workstream 02."}
+{"from": "RL-08", "type": "IMPLEMENTS", "to": "ws_02_robotics_layout", "ts": "2026-09-18", "note": "Robotics-layout contract item RL-08 is owned by workstream 02."}
+{"from": "RL-09", "type": "IMPLEMENTS", "to": "ws_02_robotics_layout", "ts": "2026-09-18", "note": "Robotics-layout contract item RL-09 is owned by workstream 02."}
+{"from": "RL-10", "type": "IMPLEMENTS", "to": "ws_02_robotics_layout", "ts": "2026-09-18", "note": "Robotics-layout contract item RL-10 is owned by workstream 02."}
+{"from": "ES-01", "type": "IMPLEMENTS", "to": "ws_03_embed_shell", "ts": "2026-09-18", "note": "Embed-shell contract item ES-01 is owned by workstream 03."}
+{"from": "ES-02", "type": "IMPLEMENTS", "to": "ws_03_embed_shell", "ts": "2026-09-18", "note": "Embed-shell contract item ES-02 is owned by workstream 03."}
+{"from": "ES-03", "type": "IMPLEMENTS", "to": "ws_03_embed_shell", "ts": "2026-09-18", "note": "Embed-shell contract item ES-03 is owned by workstream 03."}
+{"from": "ES-04", "type": "IMPLEMENTS", "to": "ws_03_embed_shell", "ts": "2026-09-18", "note": "Embed-shell contract item ES-04 is owned by workstream 03."}
+{"from": "ES-05", "type": "IMPLEMENTS", "to": "ws_03_embed_shell", "ts": "2026-09-18", "note": "Embed-shell contract item ES-05 is owned by workstream 03."}
+{"from": "ES-06", "type": "IMPLEMENTS", "to": "ws_03_embed_shell", "ts": "2026-09-18", "note": "Embed-shell contract item ES-06 is owned by workstream 03."}
+{"from": "ES-07", "type": "IMPLEMENTS", "to": "ws_03_embed_shell", "ts": "2026-09-18", "note": "Embed-shell contract item ES-07 is owned by workstream 03."}
+{"from": "ES-08", "type": "IMPLEMENTS", "to": "ws_03_embed_shell", "ts": "2026-09-18", "note": "Embed-shell contract item ES-08 is owned by workstream 03."}
+{"from": "ES-09", "type": "IMPLEMENTS", "to": "ws_03_embed_shell", "ts": "2026-09-18", "note": "Embed-shell contract item ES-09 is owned by workstream 03."}
+{"from": "ES-10", "type": "IMPLEMENTS", "to": "ws_03_embed_shell", "ts": "2026-09-18", "note": "Embed-shell contract item ES-10 is owned by workstream 03."}
+{"from": "ES-11", "type": "IMPLEMENTS", "to": "ws_03_embed_shell", "ts": "2026-09-18", "note": "Embed-shell contract item ES-11 is owned by workstream 03."}
+{"from": "RR-01", "type": "IMPLEMENTS", "to": "ws_04_record_replay", "ts": "2026-09-18", "note": "Record-replay contract item RR-01 is owned by workstream 04."}
+{"from": "RR-02", "type": "IMPLEMENTS", "to": "ws_04_record_replay", "ts": "2026-09-18", "note": "Record-replay contract item RR-02 is owned by workstream 04."}
+{"from": "RR-03", "type": "IMPLEMENTS", "to": "ws_04_record_replay", "ts": "2026-09-18", "note": "Record-replay contract item RR-03 is owned by workstream 04."}
+{"from": "RR-04", "type": "IMPLEMENTS", "to": "ws_04_record_replay", "ts": "2026-09-18", "note": "Record-replay contract item RR-04 is owned by workstream 04."}
+{"from": "RR-05", "type": "IMPLEMENTS", "to": "ws_04_record_replay", "ts": "2026-09-18", "note": "Record-replay contract item RR-05 is owned by workstream 04."}
+{"from": "RR-06", "type": "IMPLEMENTS", "to": "ws_04_record_replay", "ts": "2026-09-18", "note": "Record-replay contract item RR-06 is owned by workstream 04."}
+{"from": "RR-07", "type": "IMPLEMENTS", "to": "ws_04_record_replay", "ts": "2026-09-18", "note": "Record-replay contract item RR-07 is owned by workstream 04."}
+{"from": "SX-01", "type": "IMPLEMENTS", "to": "ws_05_stunt_extras", "ts": "2026-09-18", "note": "Stunt-extras contract item SX-01 is owned by workstream 05."}
+{"from": "SX-02", "type": "IMPLEMENTS", "to": "ws_05_stunt_extras", "ts": "2026-09-18", "note": "Stunt-extras contract item SX-02 is owned by workstream 05."}
+{"from": "SX-03", "type": "IMPLEMENTS", "to": "ws_05_stunt_extras", "ts": "2026-09-18", "note": "Stunt-extras contract item SX-03 is owned by workstream 05."}
+{"from": "SX-04", "type": "IMPLEMENTS", "to": "ws_05_stunt_extras", "ts": "2026-09-18", "note": "Stunt-extras contract item SX-04 is owned by workstream 05."}
+{"from": "SX-05", "type": "IMPLEMENTS", "to": "ws_05_stunt_extras", "ts": "2026-09-18", "note": "Stunt-extras contract item SX-05 is owned by workstream 05."}
+{"from": "SX-06", "type": "IMPLEMENTS", "to": "ws_05_stunt_extras", "ts": "2026-09-18", "note": "Stunt-extras contract item SX-06 is owned by workstream 05."}
